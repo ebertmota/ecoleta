@@ -1,1 +1,23 @@
-node_modules
+
+# Dependency directories
+node_modules/
+jspm_packages/
+
+
+# Database File
+database.sqlite
+
+# dotenv environment variables file
+.env
+.env.test
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# npm
+package-lock.json
