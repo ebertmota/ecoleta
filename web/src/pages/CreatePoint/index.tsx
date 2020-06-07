@@ -10,6 +10,8 @@ import { toast } from 'react-toastify';
 import api from '../../services/api';
 import logo from '../../assets/logo.svg';
 
+import Dropzone from '../../components/Dropzone';
+
 import { Container } from './styles';
 
 interface Item {
@@ -44,6 +46,7 @@ const CreatePoint = () => {
   const [selectedCity, setSelectedCity] = useState('0');
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
   const [selectedMapPosition, setSelectedMapPosition] = useState<[number, number]>([0, 0]);
+  const [selectedFile, setSelectedFile] = useState<File>();
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition((position) => {
@@ -124,16 +127,20 @@ const CreatePoint = () => {
       const city = selectedCity;
       const [latitude, longitude] = selectedMapPosition;
 
-      const data = {
-        name,
-        email,
-        whatsapp,
-        uf,
-        city,
-        latitude,
-        longitude,
-        items: selectedItems,
-      };
+      const data = new FormData();
+
+
+      data.append('name', name);
+      data.append('email', email);
+      data.append('whatsapp', whatsapp);
+      data.append('uf', uf);
+      data.append('city', city);
+      data.append('latitude', String(latitude));
+      data.append('longitude', String(longitude));
+      data.append('items', selectedItems.join(','));
+      if (selectedFile) {
+        data.append('image', selectedFile);
+      }
 
       await api.post('points', data);
       toast.success('Ponto de coleta criado com sucesso !');
@@ -162,6 +169,8 @@ const CreatePoint = () => {
           <br />
           ponto de coleta
         </h1>
+
+        <Dropzone onFileUploaded={setSelectedFile} />
 
         <fieldset>
           <legend>
