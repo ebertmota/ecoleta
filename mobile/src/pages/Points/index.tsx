@@ -6,7 +6,7 @@ import {
   Alert,
 } from 'react-native';
 import { Feather as Icon } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import * as Location from 'expo-location';
 
 import api from '../../services/api';
@@ -41,7 +41,16 @@ interface Point {
   longitude: number;
 }
 
+interface Params {
+  uf: string;
+  city: string;
+}
+
 const Points = () => {
+  const route = useRoute();
+
+  const routeParams = route.params as Params;
+
   const [items, setItems] = useState<Item[]>([]);
   const [points, setPoints] = useState<Point[]>([]);
 
@@ -84,15 +93,15 @@ const Points = () => {
     api
       .get('points', {
         params: {
-          city: 'Conceição do Coité',
-          uf: 'BA',
-          items: [1, 2],
+          city: routeParams.city,
+          uf: routeParams.uf,
+          items: selectedItems,
         },
       })
       .then((response) => {
         setPoints(response.data);
       });
-  });
+  }, [selectedItems]);
 
   function handleSelectItem(id: number) {
     const alreadySelected = selectedItems.findIndex((item) => item === id);
@@ -110,8 +119,8 @@ const Points = () => {
     navigation.goBack();
   }
 
-  function handleNavigateToDetail() {
-    navigation.navigate('Detail');
+  function handleNavigateToDetail(id) {
+    navigation.navigate('Detail', { point_id: id });
   }
 
   return (
@@ -142,7 +151,7 @@ const Points = () => {
                     latitude: point.latitude,
                     longitude: point.longitude,
                   }}
-                  onPress={handleNavigateToDetail}
+                  onPress={() => handleNavigateToDetail(point.id)}
                 >
                   <MapMarkerContainer>
                     <MapMarkerImage
