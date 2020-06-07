@@ -49,13 +49,19 @@ export const Button = styled(RectButton)`
   margin-top: 8px;
 `;
 
-export const Input = styled.View`
+export const SelectContainer = styled.View`
+  margin: 20px 0;
+`;
+
+export const SelectItem = styled.View`
   height: 60px;
   background-color: #fff;
   border-radius: 10px;
   margin-bottom: 8px;
   padding: 0 24px;
   font-size: 16px;
+  justify-content: space-between;
+  text-align: center;
 `;
 
 export const ButtonIcon = styled.View`
