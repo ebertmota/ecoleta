@@ -6,9 +6,10 @@ import { FiArrowLeft } from 'react-icons/fi';
 import { Map, TileLayer, Marker } from 'react-leaflet';
 import axios from 'axios';
 import { LeafletMouseEvent } from 'leaflet';
+import { toast } from 'react-toastify';
 import api from '../../services/api';
-
 import logo from '../../assets/logo.svg';
+
 import { Container } from './styles';
 
 interface Item {
@@ -115,28 +116,32 @@ const CreatePoint = () => {
   }
 
   async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
+    try {
+      e.preventDefault();
 
-    const { name, email, whatsapp } = formData;
-    const uf = selectedUf;
-    const city = selectedCity;
-    const [latitude, longitude] = selectedMapPosition;
+      const { name, email, whatsapp } = formData;
+      const uf = selectedUf;
+      const city = selectedCity;
+      const [latitude, longitude] = selectedMapPosition;
 
-    const data = {
-      name,
-      email,
-      whatsapp,
-      uf,
-      city,
-      latitude,
-      longitude,
-      items: selectedItems,
-    };
+      const data = {
+        name,
+        email,
+        whatsapp,
+        uf,
+        city,
+        latitude,
+        longitude,
+        items: selectedItems,
+      };
 
-    await api.post('points', data);
-    history.push('/');
-
-    alert('Ponto de coleta criado com sucesso !');
+      await api.post('points', data);
+      toast.success('Ponto de coleta criado com sucesso !');
+      setTimeout(() => history.push('/'), 3000);
+    } catch (err) {
+      toast.error('Não foi possivel criar o ponto de coleta, tente novamente mais tarde.');
+      setTimeout(() => history.push('/'), 3000);
+    }
   }
 
   return (
@@ -263,6 +268,7 @@ const CreatePoint = () => {
         <button type="submit">Cadastrar ponto de coleta</button>
       </form>
     </Container>
+
   );
 };
 
