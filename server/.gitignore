@@ -4,14 +4,17 @@ node_modules/
 jspm_packages/
 
 
+# Uploads directorie
+
+uploads/*
+!uploads/.gitkeep
+
 # Database File
-database.sqlite
+*.sqlite
 
-# dotenv environment variables file
-.env
-.env.test
 
-# Logs
+
+# Logs and locks
 logs
 *.log
 npm-debug.log*
@@ -19,7 +22,4 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 yarn.lock
-
-
-# npm
 package-lock.json
