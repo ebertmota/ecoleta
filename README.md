@@ -106,4 +106,4 @@
  $ expo install expo-font @expo-google-fonts/ubuntu @expo-google-fonts/roboto
  ```
  
- Made with :coffee: by <a href="https://www.linkedin.com/in/ebertmota/" >Ebert Mota</a>.
+ Made with :coffee: by <a href="https://www.linkedin.com/in/ebertmota/" target="_blank">Ebert Mota</a>.
