@@ -32,5 +32,29 @@
   <li>Expo</li>
  </ul>
  
+ <h2>Como usar :question:</h2>
+ <p>Para clonar essa aplicação você irá precisar de Git, Node.Js e Yarn instalados em seu computador.</p>
+ 
+ <h3>Instalando a API</h3>
+ 
+ ```bash
+ # Clone este repositório
+ 
+ git clone ...
+ 
+ 
+ # Navegue até o repositório
+ $ cd repo
+ 
+ # Instale as dependências
+ $ yarn install
+ 
+ # Rode as migrations
+ $ yarn knex:migrate
+ 
+ # Rode os seeds
+ $ yarn knex:seed
+ 
+ ```
  
  
