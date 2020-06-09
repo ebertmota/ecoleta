@@ -7,8 +7,10 @@ import { Map, TileLayer, Marker } from 'react-leaflet';
 import axios from 'axios';
 import { LeafletMouseEvent } from 'leaflet';
 import { toast } from 'react-toastify';
+import * as yup from 'yup';
 import api from '../../services/api';
 import logo from '../../assets/logo.svg';
+
 
 import Dropzone from '../../components/Dropzone';
 
@@ -57,16 +59,21 @@ const CreatePoint = () => {
   }, []);
 
   useEffect(() => {
-    api.get('items').then((res) => {
-      setItems(res.data);
-    });
+    async function getItems() {
+      try {
+        const response = await api.get('items');
+        setItems(response.data);
+      } catch (err) {
+        toast.error('Erro de comunicação com o servidor, itens de coleta estarão indisponíveis temporariamente.');
+      }
+    }
+    getItems();
   }, []);
 
   useEffect(() => {
     axios.get<IBGEUFResponse[]>('https://servicodados.ibge.gov.br/api/v1/localidades/estados')
       .then((res) => {
         const ufInitials = res.data.map((uf) => uf.sigla);
-
 
         setUfs(ufInitials);
       });
@@ -141,6 +148,44 @@ const CreatePoint = () => {
       if (selectedFile) {
         data.append('image', selectedFile);
       }
+
+
+      const dataForValidate = {
+        name,
+        email,
+        whatsapp,
+        uf,
+        city,
+        latitude,
+        longitude,
+        items,
+        image: selectedFile,
+      };
+
+      const pointSchema = yup.object().shape({
+        name: yup.string().required(),
+        email: yup.string().email().required(),
+        whatsapp: yup.number().required(),
+        uf: yup.string().required().max(2),
+        city: yup.string().required(),
+        latitude: yup.number().required(),
+        longitude: yup.number().required(),
+      });
+
+      const valid = await pointSchema.isValid(dataForValidate);
+
+      if (selectedFile === undefined) {
+        return toast.error('Selecionar a imagem para o ponto cadastrado é obrigatório.');
+      }
+
+      if (selectedItems.length === 0) {
+        return toast.error('Você precisa selecionar pelo menos um item para coleta.');
+      }
+
+      if (!valid) {
+        return toast.error('Erro no cadastro, verifique se preencheu todos os campos e tente novamente.');
+      }
+
 
       await api.post('points', data);
       toast.success('Ponto de coleta criado com sucesso !');
@@ -261,6 +306,7 @@ const CreatePoint = () => {
           </legend>
 
           <ul className="items-grid">
+
             {items.map((item) => (
               <li
                 className={selectedItems.includes(item.id) ? 'selected' : ''}
