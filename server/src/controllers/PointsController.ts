@@ -59,6 +59,15 @@ class PointsController {
       items,
     } = req.body;
 
+    const checkPointExists = await knex('points').where({
+      latitude,
+      longitude,
+    }).select('*');
+
+    if (checkPointExists.length > 0) {
+      return res.status(400).json({ error: 'Point already exists' });
+    }
+
     const trx = await knex.transaction();
 
 
@@ -73,6 +82,7 @@ class PointsController {
       uf,
     };
 
+
     const insertedIds = await trx('points').insert(point);
 
     const point_id = insertedIds[0];
@@ -84,6 +94,7 @@ class PointsController {
       point_id,
       item_id,
     }));
+
 
     await trx('point_items').insert(pointItems);
 
